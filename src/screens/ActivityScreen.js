@@ -178,8 +178,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2fafe",
   },
   scrollContent: {
-    paddingTop: 230, // Ruang untuk header tetap
+    paddingTop: 250, // Ruang untuk header tetap
     paddingHorizontal: 15,
+    paddingBottom: 90,
   },
   DateMoment: {
     paddingHorizontal: 0,
