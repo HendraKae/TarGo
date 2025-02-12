@@ -13,7 +13,7 @@ import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
-import Task from "../components/task";
+import Task from "../components/Task";
 
 const ActivityScreen = () => {
   const navigation = useNavigation();
