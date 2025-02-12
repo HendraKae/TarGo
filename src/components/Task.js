@@ -37,20 +37,20 @@ const TaskDone = `<svg width="19" height="19" viewBox="0 0 22 22" fill="none" xm
 </svg>
 `;
 
-const Task = () => {
+const Task = ({ titleTask, TimeTask, DateTask }) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [taskDoneModalVisible, setTaskDoneModalVisible] = useState(false);
 
   return (
     <View style={styles.container}>
       <View style={styles.WpText}>
-        <Text style={[styles.text, styles.textTitle]}>Ngocoks</Text>
+        <Text style={[styles.text, styles.textTitle]}>{titleTask}</Text>
         <View style={styles.TimeDateText}>
           <SvgXml xml={time} style={styles.iconTask} />
-          <Text style={styles.text}>19.20</Text>
+          <Text style={styles.text}>{TimeTask}</Text>
           <Text style={styles.text}>|</Text>
           <SvgXml xml={date} style={styles.iconTask} />
-          <Text style={styles.text}>27 Februari 2025</Text>
+          <Text style={styles.text}>{DateTask}</Text>
         </View>
       </View>
       <View style={styles.colorBg}></View>
