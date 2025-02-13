@@ -14,7 +14,11 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import Task from "../components/Task";
-import { deleteActivity, fetchActivities, updateActivityStatus } from "../database/Database";
+import {
+  deleteActivity,
+  fetchActivities,
+  updateActivityStatus,
+} from "../database/Database";
 
 const ActivityScreen = () => {
   const navigation = useNavigation();
@@ -27,6 +31,7 @@ const ActivityScreen = () => {
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refresh, setRefresh] = useState(0); // State untuk memicu refresh
 
   useEffect(() => {
     // Set locale ke bahasa Indonesia dengan updateLocale
@@ -64,8 +69,6 @@ const ActivityScreen = () => {
     generateDates();
     const loadActivities = async () => {
       const response = await fetchActivities();
-      console.log(response);
-
       if (response.success) {
         setActivities(response.data); // Menyimpan data ke state
       } else {
@@ -76,7 +79,7 @@ const ActivityScreen = () => {
 
     loadActivities(); // Panggil fungsi fetchActivities
     return () => backHandler.remove();
-  }, [navigation]);
+  }, [navigation, refresh]); // Tambahkan refresh ke dependencies
 
   // Menghasilkan tanggal untuk satu bulan penuh
   const generateDates = () => {
@@ -104,13 +107,37 @@ const ActivityScreen = () => {
   };
 
   if (loading) {
-    return <Text>Loading...</Text>;
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 15,
+          backgroundColor: "#f2fafe",
+        }}
+      >
+        <Text style={{ fontFamily: "Poppins-Medium", fontSize: 16 }}>
+          Loading...
+        </Text>
+      </View>
+    );
   }
 
   if (error) {
-    return <Text>Error: {error.message}</Text>;
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          paddingHorizontal: 15,
+        }}
+      >
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
   }
-
 
   return (
     <View style={styles.container}>
@@ -194,13 +221,20 @@ const ActivityScreen = () => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {activities.map((task) => (
           <Task
-            id={task.id} // Key unik untuk setiap item
+            key={task.id} // Key unik untuk setiap item
+            id={task.id}
             titleTask={task.description}
             TimeTask={task.time}
             DateTask={task.date}
-            onDeleteTask={() => deleteActivity(task.id)}
+            onDeleteTask={async () => {
+              await deleteActivity(task.id);
+              setRefresh((prev) => prev + 1); // Pemicu refresh
+            }}
             isCompleted={task.isCompleted}
-            onCompleteTask={() => updateActivityStatus(task.id, true)}
+            onCompleteTask={async () => {
+              await updateActivityStatus(task.id, true);
+              setRefresh((prev) => prev + 1); // Pemicu refresh
+            }}
           />
         ))}
       </ScrollView>

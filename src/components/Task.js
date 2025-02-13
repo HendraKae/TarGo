@@ -107,42 +107,41 @@ const Task = ({
       </Modal>
 
       {/* Task Done Modal */}
-      {isCompleted === 0 ?
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={taskDoneModalVisible}
-        onRequestClose={() => setTaskDoneModalVisible(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>
-              Apakah Anda yakin ingin menandai tugas ini selesai?
-            </Text>
-            <View style={styles.modalButtons}>
-              <Pressable
-                style={[styles.button, styles.buttonCancel]}
-                onPress={() => setTaskDoneModalVisible(false)}
-              >
-                <Text style={styles.textStyle}>Batal</Text>
-              </Pressable>
-              <Pressable
-                style={[styles.button, styles.buttonDone]}
-                onPress={() => {
-                  onCompleteTask(); // Fungsi untuk menandai tugas selesai
-                  setTaskDoneModalVisible(false);
-                }}
-              >
-                <Text style={[styles.textStyle, styles.textStyleDone]}>
-                  Selesai
-                </Text>
-              </Pressable>
+      {isCompleted === 0 ? (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={taskDoneModalVisible}
+          onRequestClose={() => setTaskDoneModalVisible(false)}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Apakah Anda yakin ingin menandai tugas ini selesai?
+              </Text>
+              <View style={styles.modalButtons}>
+                <Pressable
+                  style={[styles.button, styles.buttonCancel]}
+                  onPress={() => setTaskDoneModalVisible(false)}
+                >
+                  <Text style={styles.textStyle}>Batal</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonDone]}
+                  onPress={() => {
+                    onCompleteTask(); // Fungsi untuk menandai tugas selesai
+                    setTaskDoneModalVisible(false);
+                  }}
+                >
+                  <Text style={[styles.textStyle, styles.textStyleDone]}>
+                    Selesai
+                  </Text>
+                </Pressable>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-      : null
-      }
+        </Modal>
+      ) : null}
     </View>
   );
 };

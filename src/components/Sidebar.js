@@ -79,27 +79,34 @@ const Sidebar = () => {
     }
   };
 
-  const handleSubmit =  async ()  => {
+  const handleSubmit = async () => {
+    // Validasi input wajib diisi
+    if (!taskDescription || !taskDate || !taskTime) {
+      Alert.alert("Error", "Semua field harus diisi!");
+      return;
+    }
+
     console.log("Task Description:", taskDescription);
     console.log("Task Date:", taskDate);
     console.log("Task Time:", taskTime);
-    console.log('');
-    console.log('run1');
-    const b = await addActivity(taskDescription, taskDate, taskTime);
 
-  console.log(b);
-    console.log('run2');
-    const a =  await fetchActivities();
-    console.log('run3');
-    console.log(a);
-    console.log('run4');
-
-    toggleBottomSheet();
+    // Tambahkan aktivitas ke database
+    const response = await addActivity(taskDescription, taskDate, taskTime);
+    if (response.success) {
+      // Reset input setelah submit
+      setTaskDescription("");
+      setTaskDate("");
+      setTaskTime("");
+      toggleBottomSheet(); // Tutup bottom sheet
+      Alert.alert("Sukses", "Tugas berhasil ditambahkan!");
+    } else {
+      Alert.alert("Error", "Gagal menambahkan tugas!");
+    }
   };
 
   const handleOutsidePress = () => {
     if (isBottomSheetVisible) {
-      toggleBottomSheet(); // Close the bottom sheet if clicking outside
+      toggleBottomSheet(); // Tutup bottom sheet jika mengklik di luar
     }
   };
 
@@ -117,6 +124,14 @@ const Sidebar = () => {
         selected.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
       ); // Format HH:MM
     }
+  };
+
+  const handleCancel = () => {
+    // Reset input saat tombol batal diklik
+    setTaskDescription("");
+    setTaskDate("");
+    setTaskTime("");
+    toggleBottomSheet(); // Tutup bottom sheet
   };
 
   return (
@@ -207,7 +222,7 @@ const Sidebar = () => {
               </View>
               <View style={styles.modalButtons}>
                 <TouchableOpacity
-                  onPress={toggleBottomSheet}
+                  onPress={handleCancel}
                   style={[styles.bottomBS, styles.cancelButton]}
                 >
                   <Text style={styles.buttonText}>Batal</Text>
@@ -237,7 +252,7 @@ const styles = StyleSheet.create({
     height: 70,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingTop: "5",
+    paddingTop: 5,
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
@@ -246,11 +261,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 }, // For iOS
     shadowOpacity: 0.3, // For iOS
     shadowRadius: 4, // For iOS
-
-    // Untuk iOS (Tetap ada untuk kompatibilitas)
-    shadowOffset: { width: 0, height: -6 }, // Lebih naik ke atas
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
   },
   wpMenu: {
     width: "33.33%",
@@ -260,8 +270,8 @@ const styles = StyleSheet.create({
   },
   wpMenuAdd: {
     backgroundColor: "#fd7f51",
-    width: "60",
-    height: "60",
+    width: 60,
+    height: 60,
     borderRadius: 999,
     justifyContent: "center",
     flexDirection: "column",
@@ -287,7 +297,6 @@ const styles = StyleSheet.create({
   },
   overlay: {
     position: "absolute",
-    // top: 0,
     left: 0,
     right: 0,
     bottom: 0,
@@ -328,17 +337,16 @@ const styles = StyleSheet.create({
     borderRadius: 7,
     marginBottom: 11,
     fontFamily: "Poppins-Medium",
-    paddingHorizontal: "15",
+    paddingHorizontal: 15,
     fontSize: 13,
-    paddingTop: 3 + 9,
-    paddingBottom: 1 + 9,
+    paddingTop: 12,
+    paddingBottom: 10,
   },
   modalButtons: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 15,
   },
-
   bottomBS: {
     flex: 1,
     paddingVertical: 12,
@@ -351,15 +359,12 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
   },
-
   cancelButton: {
     backgroundColor: "#3175e3",
   },
-
   submitButton: {
     backgroundColor: "#3175e3",
   },
-
   buttonText: {
     color: "#fff",
     fontWeight: "bold",
@@ -368,7 +373,7 @@ const styles = StyleSheet.create({
   absoluteIconList: {
     position: "absolute",
     right: 15,
-    top: "13",
+    top: 13,
   },
 });
 
