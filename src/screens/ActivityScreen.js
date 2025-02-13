@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import moment from "moment";
 import Task from "../components/Task";
+import { deleteActivity, fetchActivities, updateActivityStatus } from "../database/Database";
 
 const ActivityScreen = () => {
   const navigation = useNavigation();
@@ -23,6 +24,9 @@ const ActivityScreen = () => {
     moment().format("YYYY-MM-DD")
   );
   const flatListRef = useRef(null);
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     // Set locale ke bahasa Indonesia dengan updateLocale
@@ -58,6 +62,19 @@ const ActivityScreen = () => {
     );
 
     generateDates();
+    const loadActivities = async () => {
+      const response = await fetchActivities();
+      console.log(response);
+
+      if (response.success) {
+        setActivities(response.data); // Menyimpan data ke state
+      } else {
+        setError(response.error); // Menangani error
+      }
+      setLoading(false); // Selesai memuat data
+    };
+
+    loadActivities(); // Panggil fungsi fetchActivities
     return () => backHandler.remove();
   }, [navigation]);
 
@@ -85,6 +102,15 @@ const ActivityScreen = () => {
       }
     }, 100);
   };
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
 
   return (
     <View style={styles.container}>
@@ -166,7 +192,17 @@ const ActivityScreen = () => {
       </View>
       {/* Konten yang dapat digulir */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Task />
+        {activities.map((task) => (
+          <Task
+            id={task.id} // Key unik untuk setiap item
+            titleTask={task.description}
+            TimeTask={task.time}
+            DateTask={task.date}
+            onDeleteTask={() => deleteActivity(task.id)}
+            isCompleted={task.isCompleted}
+            onCompleteTask={() => updateActivityStatus(task.id, true)}
+          />
+        ))}
       </ScrollView>
     </View>
   );

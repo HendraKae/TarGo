@@ -7,6 +7,7 @@ import HomeScreen from "./src/screens/HomeScreen";
 import ActivityScreen from "./src/screens/ActivityScreen";
 import Sidebar from "./src/components/Sidebar";
 import useFonts from "./src/utils/Fonts";
+import { initDatabase } from "./src/database/Database";
 
 const Stack = createStackNavigator();
 
@@ -15,7 +16,7 @@ export default function App() {
   const navigationRef = useRef(null);
   const backPressed = useRef(0); // Gunakan useRef agar nilainya tetap
 
-  useEffect(() => {
+  useEffect( () => {
     const backAction = () => {
       if (navigationRef.current?.getCurrentRoute()?.name !== "Home") {
         navigationRef.current?.navigate("Home");
@@ -35,6 +36,9 @@ export default function App() {
     };
 
     const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+     initDatabase();
+
     
     return () => backHandler.remove();
   }, []);

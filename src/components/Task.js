@@ -37,7 +37,15 @@ const TaskDone = `<svg width="19" height="19" viewBox="0 0 22 22" fill="none" xm
 </svg>
 `;
 
-const Task = ({ titleTask, TimeTask, DateTask }) => {
+const Task = ({
+  id,
+  titleTask,
+  TimeTask,
+  DateTask,
+  onDeleteTask,
+  isCompleted,
+  onCompleteTask,
+}) => {
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [taskDoneModalVisible, setTaskDoneModalVisible] = useState(false);
 
@@ -73,7 +81,7 @@ const Task = ({ titleTask, TimeTask, DateTask }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
-              Apakah anda yakin ingin menghapus data ini ?
+              Apakah Anda yakin ingin menghapus tugas ini?
             </Text>
             <View style={styles.modalButtons}>
               <Pressable
@@ -85,7 +93,7 @@ const Task = ({ titleTask, TimeTask, DateTask }) => {
               <Pressable
                 style={[styles.button, styles.buttonDelete]}
                 onPress={() => {
-                  // Handle delete action here
+                  onDeleteTask(); // Fungsi untuk menghapus tugas
                   setDeleteModalVisible(false);
                 }}
               >
@@ -99,6 +107,7 @@ const Task = ({ titleTask, TimeTask, DateTask }) => {
       </Modal>
 
       {/* Task Done Modal */}
+      {isCompleted === 0 ?
       <Modal
         animationType="fade"
         transparent={true}
@@ -108,7 +117,7 @@ const Task = ({ titleTask, TimeTask, DateTask }) => {
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
-              Apakah anda yakin ingin menandai selesai ?
+              Apakah Anda yakin ingin menandai tugas ini selesai?
             </Text>
             <View style={styles.modalButtons}>
               <Pressable
@@ -120,7 +129,7 @@ const Task = ({ titleTask, TimeTask, DateTask }) => {
               <Pressable
                 style={[styles.button, styles.buttonDone]}
                 onPress={() => {
-                  // Handle task done action here
+                  onCompleteTask(); // Fungsi untuk menandai tugas selesai
                   setTaskDoneModalVisible(false);
                 }}
               >
@@ -132,10 +141,11 @@ const Task = ({ titleTask, TimeTask, DateTask }) => {
           </View>
         </View>
       </Modal>
+      : null
+      }
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
